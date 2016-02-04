@@ -1,5 +1,8 @@
 # A. Colello 2016
 # flickr picture scraper
+#   to run:
+#       navigate to python/flickr  
+#       scrapy crawl picture
 
 import scrapy
 import flickrapi
