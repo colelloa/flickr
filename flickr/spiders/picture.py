@@ -20,10 +20,10 @@ class PictureSpider(scrapy.Spider):
     start_urls = (
         'http://www.google.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs a url to start
     )
-    flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
+    api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET, format='parsed-json')
 
     def parse(self, response):
-        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance') #initial query
+        q = self.api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance') #initial query
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
             total_pages = all_photos['pages']
@@ -43,7 +43,7 @@ class PictureSpider(scrapy.Spider):
 
                 #finally, update current page by getting next page
                 #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
-                current_page = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance', page=page_num+1)['photos']['photo']
+                current_page = self.api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance', page=page_num+1)['photos']['photo']
 
     #param: dict of one photo on a page
     def get_flickr_items(self, photo, to_return):
@@ -61,12 +61,11 @@ class PictureSpider(scrapy.Spider):
         return to_return
 
     #use pillow here to scan the picture by URL and populate the other item, and append to to_return
+    #ASK TOM ABOUT GARBAGE COLLECTION
+    #PIL.Image, StringIO, requests.get()
+    #could cause problems with VM if memory gets overloaded
     def scan_picture(self, url, to_return):
         p_item = PictureItem()
-
-        #ASK TOM ABOUT GARBAGE COLLECTION
-        #PIL.Image, StringIO, requests.get()
-        #could cause problems with VM if memory gets overloaded
 
         #attempt to prevent memory leak: with statement
         with Image.open(StringIO(requests.get(url).content)) as img:
