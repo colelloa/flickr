@@ -1,0 +1,68 @@
+# A. Colello 2016
+# flickr picture scraper
+
+import scrapy
+import flickrapi
+
+from flickr.items import FlickrMetaItem, PictureItem
+
+API_KEY = u'483b469fca83cb39dea8e80c34c64621'
+API_SECRET = u'02f66253ff8ed773'
+QUERY = "golf ball rough grass"
+
+class PictureSpider(scrapy.Spider):
+    name = "picture"
+    allowed_domains = ["www.flickr.com"]
+    start_urls = (
+        'http://www.flickr.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs it to run
+    )
+    flickr_api = flickrapi.FlickrAPI(API_KEY, API_SECRET,format='parsed-json')
+    extras='url_o'  # get url of largest possible picture; 
+                    # for more sizes: http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
+
+    def parse(self, response):
+        q = self.flickr_api.photos.search(text=QUERY, per_page=5, extras=self.extras) #initial query
+        #q.keys = 'photos' (metadata i care about), 'stat' -(ok query or not)
+        if q['stat'] == 'ok': #successful query
+            all_photos = q['photos']
+            total_pages = all_photos['pages']
+
+            current_page = all_photos['photo'] #get page 1; list of dicts
+            for page_num in range(1, total_pages): #iterate through all pages
+                for photo in current_page: #iterate through each dict in the list
+                    picture_items = self.get_flickr_items(photo, [])
+                    for i in picture_items:
+                        yield i
+
+                break 
+
+                #finally, update current page by getting next page
+                #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
+                current_page = self.flickr_api.photos.search(text=QUERY, per_page=5, extras=self.extras, page=page_num+1)['photos']['photo']
+
+    #param: dict of one photo on a page
+    def get_flickr_items(self, photo, to_return):
+        f_item = FlickrMetaItem()
+        f_item['url'] = photo['url_o']
+
+        #(get other flickr metadata here, and put in f_item)
+
+        to_return.append(f_item)
+
+        self.scan_picture(f_item['url'], to_return)
+
+        return to_return
+
+    #use pillow here to scan the picture and populate the other item, and append to to_return
+    def scan_picture(self, url, to_return):
+        item = PictureItem()
+        item['max_lower_pix'] = 1
+
+        to_return.append(item)
+
+
+
+
+
+
+        
