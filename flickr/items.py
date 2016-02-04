@@ -11,6 +11,7 @@ class FlickrMetaItem(Item):
     url = Field()
 
 class PictureItem(Item):
+    url = Field() #decent primary key for now
     max_lower_pix = Field() #number of pixels above some threshold  in lower quadrant
     length = Field()
     height = Field()

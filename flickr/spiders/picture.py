@@ -6,7 +6,8 @@
 
 import scrapy
 import flickrapi
-import urllib.request,io
+import requests
+from StringIO import StringIO
 
 from PIL import Image
 from flickr.items import FlickrMetaItem, PictureItem
@@ -61,16 +62,16 @@ class PictureSpider(scrapy.Spider):
     #use pillow here to scan the picture and populate the other item, and append to to_return
     def scan_picture(self, url, to_return):
         item = PictureItem()
-        photo_path = io.StringIO(urllib.request.urlopen(url).read())
-        img = Image.open(photo_path)
+        r = requests.get(url)
+        img = Image.open(StringIO(r.content))
         length,height = img.size
 
+        item['max_lower_pix'] = 1 #DEV_REMOVE
 
-        item['max_lower_pix'] = 1 
+        item['url'] = url
         item['length'] = length
         item['height'] = height
-
-
+        
         to_return.append(item)
 
 
