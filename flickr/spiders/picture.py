@@ -7,14 +7,12 @@
 import scrapy
 import flickrapi
 import requests
+
 from StringIO import StringIO
-
 from PIL import Image
-from flickr.items import FlickrMetaItem, PictureItem
 
-API_KEY = u'483b469fca83cb39dea8e80c34c64621'
-API_SECRET = u'02f66253ff8ed773'
-QUERY = "golf ball rough grass"
+from flickr.items import FlickrMetaItem, PictureItem
+import flickr.system_constants as s
 
 class PictureSpider(scrapy.Spider):
     name = "picture"
@@ -22,12 +20,11 @@ class PictureSpider(scrapy.Spider):
     start_urls = (
         'http://www.flickr.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs it to run
     )
-    flickr_api = flickrapi.FlickrAPI(API_KEY, API_SECRET,format='parsed-json')
-    extras='url_o'  # get url of largest possible picture; 
-                    # for more sizes: http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
+    flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
+    extras='url_o'  # get url of largest possible picture; see items.PictureItem for how to get other extras
 
     def parse(self, response):
-        q = self.flickr_api.photos.search(text=QUERY, per_page=5, extras=self.extras) #initial query
+        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=self.extras) #initial query
         #q.keys = 'photos' (metadata i care about), 'stat' -(ok query or not)
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
@@ -40,7 +37,7 @@ class PictureSpider(scrapy.Spider):
                     for i in picture_items:
                         yield i
 
-                break 
+                break #DEV_REMOVE
 
                 #finally, update current page by getting next page
                 #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
@@ -71,7 +68,7 @@ class PictureSpider(scrapy.Spider):
         item['url'] = url
         item['length'] = length
         item['height'] = height
-        
+
         to_return.append(item)
 
 

@@ -9,10 +9,11 @@ from scrapy import Item, Field
 
 class FlickrMetaItem(Item):
     url = Field()
+    #lots of options here http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
 
 class PictureItem(Item):
     url = Field() #decent primary key for now
-    max_lower_pix = Field() #number of pixels above some threshold  in lower quadrant
+    max_lower_pix = Field() #number of pixels above SOME threshold  in lower quadrant
     length = Field()
     height = Field()
 
