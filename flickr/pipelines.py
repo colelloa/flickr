@@ -1,13 +1,20 @@
-# -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
+#connect to database using psycopg2
 
 class FlickrPipeline(object):
     def process_item(self, item, spider):
         print '**********************'
-        print 'ITEM YIELDED TO PIPELINE:'
-        print item        
+        if item.__class__.__name__ == 'FlickrMetaItem':
+            self.add_flickr_meta(item)
+        elif item.__class__.__name__ == 'PictureItem':
+            self.add_picture_item(item)
+        else:
+            print 'ERROR'
+            print item
+
+    def add_flickr_meta(self, item):
+        print 'FLICKR ITEM YIELDED TO PIPELINE:'
+        print item   
+
+    def add_picture_item(self, item):
+        print 'PICTURE ITEM YIELDED TO PIPELINE:'
+        print item       

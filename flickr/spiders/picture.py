@@ -71,9 +71,3 @@ class PictureSpider(scrapy.Spider):
 
         to_return.append(item)
 
-
-
-
-
-
-        
