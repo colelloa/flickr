@@ -76,5 +76,5 @@ class PictureSpider(scrapy.Spider):
         p_item['length'] = length
         p_item['height'] = height
 
-        to_return.append(item)
+        to_return.append(p_item)
 
