@@ -29,14 +29,16 @@ class PictureSpider(scrapy.Spider):
             all_photos = q['photos']
             total_pages = all_photos['pages']
             current_page = all_photos['photo'] #get page 1; list of dicts
-
+            count = 0 #DEV_REMOVE
             for page_num in range(1, total_pages): #iterate through all pages
                 for photo in current_page: #iterate through each dict in the list
                     items_to_yield = self.get_flickr_items(photo, [])
                     for i in items_to_yield:
                         yield i
 
-                break #DEV_REMOVE
+                count += 1 #DEV_REMOVE
+                if count > 3: #DEV_REMOVE
+                    break #DEV_REMOVE
 
                 #finally, update current page by getting next page
                 #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
