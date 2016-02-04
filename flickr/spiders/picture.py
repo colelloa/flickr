@@ -16,20 +16,21 @@ import flickr.system_constants as s
 
 class PictureSpider(scrapy.Spider):
     name = "picture"
-    allowed_domains = ["www.flickr.com"]
+    allowed_domains = ["www.google.com", "www.flickr.com"]
     start_urls = (
-        'http://www.flickr.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs it to run
+        'http://www.google.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs a url to start
     )
     flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
 
     def parse(self, response):
         q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance') #initial query
-        #q.keys = 'photos' (metadata i care about), 'stat' -(ok query or not)
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
             total_pages = all_photos['pages']
             current_page = all_photos['photo'] #get page 1; list of dicts
+
             count = 0 #DEV_REMOVE
+            
             for page_num in range(1, total_pages): #iterate through all pages
                 for photo in current_page: #iterate through each dict in the list
                     items_to_yield = self.get_flickr_items(photo, [])
@@ -42,7 +43,7 @@ class PictureSpider(scrapy.Spider):
 
                 #finally, update current page by getting next page
                 #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
-                current_page = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, page=page_num+1)['photos']['photo']
+                current_page = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance', page=page_num+1)['photos']['photo']
 
     #param: dict of one photo on a page
     def get_flickr_items(self, photo, to_return):
