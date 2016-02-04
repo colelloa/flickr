@@ -23,7 +23,7 @@ class PictureSpider(scrapy.Spider):
     flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
 
     def parse(self, response):
-        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS) #initial query
+        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance') #initial query
         #q.keys = 'photos' (metadata i care about), 'stat' -(ok query or not)
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
@@ -45,7 +45,8 @@ class PictureSpider(scrapy.Spider):
     #param: dict of one photo on a page
     def get_flickr_items(self, photo, to_return):
         f_item = FlickrMetaItem()
-        f_item['url'] = photo['url_o']
+
+        f_item['url'] = s.BASE_URL.format(photo['farm'], photo['server'], photo['id'], photo['secret'])
 
         #(get other flickr metadata here, and put in f_item)
 
