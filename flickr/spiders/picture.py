@@ -47,6 +47,7 @@ class PictureSpider(scrapy.Spider):
         f_item = FlickrMetaItem()
 
         f_item['url'] = s.BASE_URL.format(photo['farm'], photo['server'], photo['id'], photo['secret'])
+        #https://www.flickr.com/services/api/misc.urls.html
 
         #(get other flickr metadata here, and put in f_item)
 
@@ -58,23 +59,23 @@ class PictureSpider(scrapy.Spider):
 
     #use pillow here to scan the picture by URL and populate the other item, and append to to_return
     def scan_picture(self, url, to_return):
+        p_item = PictureItem()
 
         #ASK TOM ABOUT GARBAGE COLLECTION
-            #PIL.Image, StringIO, requests.get()
-            #could cause problems with my VM if memory gets overloaded
-        
-        p_item = PictureItem()
-        r = requests.get(url)
-        img = Image.open(StringIO(r.content)) 
-        length,height = img.size #see comments in items.PictureItem
+        #PIL.Image, StringIO, requests.get()
+        #could cause problems with VM if memory gets overloaded
 
-        p_item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
+        #attempt to prevent memory leak: with statement
+        with Image.open(StringIO(requests.get(url).content)) as img:
+            length,height = img.size #see comments in items.PictureItem
 
-        #(get other picture metadata here, ande put in p_item)
+            p_item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
 
-        p_item['url'] = url
-        p_item['length'] = length
-        p_item['height'] = height
+            #(get other picture metadata here, ande put in p_item)
+
+            p_item['url'] = url
+            p_item['length'] = length
+            p_item['height'] = height
 
         to_return.append(p_item)
 

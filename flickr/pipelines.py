@@ -17,4 +17,4 @@ class FlickrPipeline(object):
 
     def add_picture_item(self, item):
         print 'PICTURE ITEM YIELDED TO PIPELINE:'
-        print item       
+        # print item       
