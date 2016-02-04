@@ -21,7 +21,7 @@ class PictureSpider(scrapy.Spider):
         'http://www.flickr.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs it to run
     )
     flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
-    extras='url_o'  # get url of largest possible picture; see items.PictureItem for how to get other extras
+    extras='url_o'  # get url of largest possible picture; see items.FlickrMetaItem
 
     def parse(self, response):
         q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=self.extras) #initial query
@@ -29,12 +29,12 @@ class PictureSpider(scrapy.Spider):
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
             total_pages = all_photos['pages']
-
             current_page = all_photos['photo'] #get page 1; list of dicts
+
             for page_num in range(1, total_pages): #iterate through all pages
                 for photo in current_page: #iterate through each dict in the list
-                    picture_items = self.get_flickr_items(photo, [])
-                    for i in picture_items:
+                    items_to_yield = self.get_flickr_items(photo, [])
+                    for i in items_to_yield:
                         yield i
 
                 break #DEV_REMOVE
@@ -56,18 +56,25 @@ class PictureSpider(scrapy.Spider):
 
         return to_return
 
-    #use pillow here to scan the picture and populate the other item, and append to to_return
+    #use pillow here to scan the picture by URL and populate the other item, and append to to_return
     def scan_picture(self, url, to_return):
-        item = PictureItem()
+
+        #ASK TOM ABOUT GARBAGE COLLECTION
+            #PIL.Image, StringIO, requests.get()
+            #could cause problems with my VM if memory gets overloaded
+        
+        p_item = PictureItem()
         r = requests.get(url)
-        img = Image.open(StringIO(r.content))
-        length,height = img.size
+        img = Image.open(StringIO(r.content)) 
+        length,height = img.size #see comments in items.PictureItem
 
-        item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
+        p_item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
 
-        item['url'] = url
-        item['length'] = length
-        item['height'] = height
+        #(get other picture metadata here, ande put in p_item)
+
+        p_item['url'] = url
+        p_item['length'] = length
+        p_item['height'] = height
 
         to_return.append(item)
 
