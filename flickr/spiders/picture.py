@@ -6,7 +6,9 @@
 
 import scrapy
 import flickrapi
+import urllib.request,io
 
+from PIL import Image
 from flickr.items import FlickrMetaItem, PictureItem
 
 API_KEY = u'483b469fca83cb39dea8e80c34c64621'
@@ -59,7 +61,15 @@ class PictureSpider(scrapy.Spider):
     #use pillow here to scan the picture and populate the other item, and append to to_return
     def scan_picture(self, url, to_return):
         item = PictureItem()
-        item['max_lower_pix'] = 1
+        photo_path = io.StringIO(urllib.request.urlopen(url).read())
+        img = Image.open(photo_path)
+        length,height = img.size
+
+
+        item['max_lower_pix'] = 1 
+        item['length'] = length
+        item['height'] = height
+
 
         to_return.append(item)
 
