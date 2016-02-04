@@ -63,7 +63,7 @@ class PictureSpider(scrapy.Spider):
         img = Image.open(StringIO(r.content))
         length,height = img.size
 
-        item['max_lower_pix'] = 1 #DEV_REMOVE
+        item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
 
         item['url'] = url
         item['length'] = length
