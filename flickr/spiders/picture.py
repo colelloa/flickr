@@ -21,10 +21,9 @@ class PictureSpider(scrapy.Spider):
         'http://www.flickr.com/', #placeholder; not actually used because I use the flickr api to query/iterate, but scrapy needs it to run
     )
     flickr_api = flickrapi.FlickrAPI(s.API_KEY, s.API_SECRET,format='parsed-json')
-    extras='url_o'  # get url of largest possible picture; see items.FlickrMetaItem
 
     def parse(self, response):
-        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=self.extras) #initial query
+        q = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS) #initial query
         #q.keys = 'photos' (metadata i care about), 'stat' -(ok query or not)
         if q['stat'] == 'ok': #successful query
             all_photos = q['photos']
@@ -41,7 +40,7 @@ class PictureSpider(scrapy.Spider):
 
                 #finally, update current page by getting next page
                 #since range() goes up to but not including the second arg, page_num+1 will be valid on the final page query and thus valid always
-                current_page = self.flickr_api.photos.search(text=QUERY, per_page=5, extras=self.extras, page=page_num+1)['photos']['photo']
+                current_page = self.flickr_api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, page=page_num+1)['photos']['photo']
 
     #param: dict of one photo on a page
     def get_flickr_items(self, photo, to_return):
@@ -76,5 +75,5 @@ class PictureSpider(scrapy.Spider):
         p_item['length'] = length
         p_item['height'] = height
 
-        to_return.append(item)
+        to_return.append(p_item)
 
