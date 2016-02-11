@@ -1,0 +1,18 @@
+-figure out a way to manually measure circles in graph
+    -compare to output of sandbox.py to make sure that DoH is predicting properly
+    -probably need 50-100 manually classified pictures from flickr
+
+
+-classifier will predict the blob that represents a golf ball given a set of n blobs
+****NOTE: COLOR MAY REFER TO A RANGE OF RGB VALUES********
+    -n blobs will include attributes such as:
+        -(x,y) center
+        -radius
+        -color that appears most frequently in blob
+        -color that appears most frequently surrounding bottom 50% of blob
+        -color that appears most frequently in surrounding top 50% of blob
+        -percentage of blob covered by one contiguous color
+        -more?
+
+-save output from pipeline to ARFF file
+    -ARFF FORMAT: http://www.cs.waikato.ac.nz/ml/weka/arff.html
