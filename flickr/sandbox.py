@@ -20,7 +20,7 @@ def run_blob(url, opt='all'):
         blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
 
         blobs_dog = blob_dog(image_gray, max_sigma=30, threshold=.1)
-        print 'Difference of Gaussian Computed'
+        print 'Difference of Gaussian computed'
 
         blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
 
@@ -38,23 +38,24 @@ def run_blob(url, opt='all'):
         blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
 
         print blobs_doh
-
+imshow(image, interpolation='nearest')
         sequence = zip([blobs_doh], ['red'], ['DoH'])
 
-    fig,axes = plt.subplots(1, 3, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
-    axes = axes.ravel()
+    # fig,axes = plt.subplots(1, 1, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
+    # axes = axes.ravel()
 
     print 'Matplot initialized'
 
     for blobs, color, title in sequence:
-        ax = axes[0]
-        axes = axes[1:]
-        ax.set_title(title)
-        ax.imshow(image, interpolation='nearest')
+        # ax = axes[0]
+        # axes = axes[1:]
+        # ax.set_title(title)
+        # ax.imshow(image, interpolation='nearest')
+        imshow(image, interpolation='nearest')
         for blob in blobs:
             y, x, r = blob
             c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
-            ax.add_patch(c)
+            # ax.add_patch(c)
 
     plt.show()
 
