@@ -6,7 +6,7 @@ from skimage.io import imread
 
 URL = 'https://farm3.staticflickr.com/2598/3753084645_9136798d32.jpg'
 
-def run_blob(url, opt='all'):
+def run_blob(url, opt='doh'):
     image = imread(url)
     print 'Image read: {}'.format(url)
     image_gray = rgb2gray(image)
@@ -38,25 +38,23 @@ def run_blob(url, opt='all'):
         blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
 
         print blobs_doh
-imshow(image, interpolation='nearest')
         sequence = zip([blobs_doh], ['red'], ['DoH'])
 
-    # fig,axes = plt.subplots(1, 1, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
-    # axes = axes.ravel()
+    fig,axes = plt.subplots(1, 3, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
+    axes = axes.ravel()
 
     print 'Matplot initialized'
 
     for blobs, color, title in sequence:
-        # ax = axes[0]
-        # axes = axes[1:]
-        # ax.set_title(title)
-        # ax.imshow(image, interpolation='nearest')
-        imshow(image, interpolation='nearest')
+        ax = axes[0]
+        axes = axes[1:]
+        ax.set_title(title)
+        ax.imshow(image, interpolation='nearest')
         for blob in blobs:
             y, x, r = blob
             c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
-            # ax.add_patch(c)
+            ax.add_patch(c)
 
     plt.show()
 
-run_blob(URL, 'doh')
+# run_blob(URL, 'doh')

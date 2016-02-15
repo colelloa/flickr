@@ -1,3 +1,4 @@
+2/10
 -figure out a way to manually measure circles in graph
     -compare to output of sandbox.py to make sure that DoH is predicting properly
     -probably need 50-100 manually classified pictures from flickr

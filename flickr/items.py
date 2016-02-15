@@ -9,6 +9,7 @@ from scrapy import Item, Field
 
 class FlickrMetaItem(Item):
     url = Field()
+    id_num = Field()
     #types of metadata:
     #    http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
 

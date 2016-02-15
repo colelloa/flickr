@@ -30,12 +30,13 @@ class PictureSpider(scrapy.Spider):
             current_page = all_photos['photo'] #get page 1; list of dicts
 
             count = 0 #DEV_REMOVE
-            
+            id_num = 1#DEV_REMOVE
             for page_num in range(1, total_pages): #iterate through all pages
                 for photo in current_page: #iterate through each dict in the list
-                    items_to_yield = self.get_flickr_items(photo, [])
+                    items_to_yield = self.get_flickr_items(photo, id_num, [])
                     for i in items_to_yield:
                         yield i
+                    id_num += 1#DEV_REMOVE
 
                 count += 1 #DEV_REMOVE
                 if count > 3: #DEV_REMOVE
@@ -46,7 +47,7 @@ class PictureSpider(scrapy.Spider):
                 current_page = self.api.photos.search(text=s.QUERY, per_page=5, extras=s.EXTRAS, sort='relevance', page=page_num+1)['photos']['photo']
 
     #param: dict of one photo on a page
-    def get_flickr_items(self, photo, to_return):
+    def get_flickr_items(self, photo, id_num, to_return):
         f_item = FlickrMetaItem()
 
         f_item['url'] = s.BASE_URL.format(photo['farm'], photo['server'], photo['id'], photo['secret'])
@@ -54,9 +55,11 @@ class PictureSpider(scrapy.Spider):
 
         #(get other flickr metadata here, and put in f_item)
 
+        f_item['id_num'] = id_num #DEV_REMOVE
+
         to_return.append(f_item)
 
-        self.scan_picture(f_item['url'], to_return)
+        # self.scan_picture(f_item['url'], to_return) DEV_REMOVE
 
         return to_return
 
