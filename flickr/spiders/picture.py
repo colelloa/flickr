@@ -13,6 +13,28 @@ from PIL import Image
 
 from flickr.items import FlickrMetaItem, PictureItem
 import flickr.system_constants as s
+#dev
+URLS_VISITED = '''https://farm2.staticflickr.com/1102/5117093816_a9c4c383c9.jpg
+https://farm4.staticflickr.com/3521/3753864330_fc3d36755a.jpg
+https://farm3.staticflickr.com/2643/3753861818_662a81c0c6.jpg
+https://farm4.staticflickr.com/3489/3753869790_4956e5478c.jpg
+https://farm4.staticflickr.com/3429/3753074355_dea84d53b2.jpg
+https://farm4.staticflickr.com/3001/2519474886_4c4dd87d5f.jpg
+https://farm3.staticflickr.com/2489/3753094819_3b182acf02.jpg
+https://farm3.staticflickr.com/2636/3753886656_7697149ebe.jpg
+https://farm4.staticflickr.com/3499/3753884788_b7ec790071.jpg
+https://farm3.staticflickr.com/2506/3753877062_f07660f945.jpg
+https://farm3.staticflickr.com/2427/3753880016_e731144ebd.jpg
+https://farm3.staticflickr.com/2294/1975875218_0610e6e722.jpg
+https://farm3.staticflickr.com/2598/3753084645_9136798d32.jpg
+https://farm6.staticflickr.com/5028/5690773693_bbd9520e4f.jpg
+https://farm6.staticflickr.com/5540/9656873877_c8a4b9849f.jpg
+https://farm9.staticflickr.com/8432/7811952096_4178084a54.jpg
+https://farm9.staticflickr.com/8738/16580900700_37478070f3.jpg
+https://farm5.staticflickr.com/4152/5013096054_8f233bfee3.jpg
+https://farm3.staticflickr.com/2601/3753093167_d9f9a8fa55.jpg
+https://farm3.staticflickr.com/2659/3753867028_73931a286d.jpg'''.split('\n')
+
 
 class PictureSpider(scrapy.Spider):
     name = "picture"
@@ -34,12 +56,13 @@ class PictureSpider(scrapy.Spider):
             for page_num in range(1, total_pages): #iterate through all pages
                 for photo in current_page: #iterate through each dict in the list
                     items_to_yield = self.get_flickr_items(photo, id_num, [])
-                    for i in items_to_yield:
-                        yield i
-                    id_num += 1#DEV_REMOVE
+                    if not (items_to_yield[0]['url']  in URLS_VISITED):#dev
+                        for i in items_to_yield:
+                            yield i
+                        id_num += 1#DEV_REMOVE
 
                 count += 1 #DEV_REMOVE
-                if count > 3: #DEV_REMOVE
+                if count > 10: #DEV_REMOVE
                     break #DEV_REMOVE
 
                 #finally, update current page by getting next page

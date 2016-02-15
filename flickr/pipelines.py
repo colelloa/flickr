@@ -1,8 +1,8 @@
 #connect to database using psycopg2
 from sandbox import run_blob
 
-import shutil
-import requests
+import shutil#dev
+import requests#dev
 
 class FlickrPipeline(object):
     def process_item(self, item, spider):
@@ -16,11 +16,12 @@ class FlickrPipeline(object):
             print item
 
     def add_flickr_meta(self, item):
-        print 'FLICKR ITEM YIELDED TO PIPELINE:'
+
         print item['url']
+        print item['id_num']
         #DEV
-        response = requests.get(url, stream=True)
-        with open('img.png', 'wb') as out_file:
+        response = requests.get(item['url'], stream=True)
+        with open('pictures/{}.jpg'.format(item['id_num']), 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
         del response
          #DEV
