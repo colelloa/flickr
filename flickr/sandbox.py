@@ -6,10 +6,12 @@ from skimage.io import imread
 
 URL = 'https://farm3.staticflickr.com/2598/3753084645_9136798d32.jpg'
 
-def run_blob(url, opt='doh'):
+def create_blobs(url, opt='all'):
     image = imread(url)
+    return_dict = dict()
     print 'Image read: {}'.format(url)
     image_gray = rgb2gray(image)
+
     print 'Greyscale applied'
 
     if opt=='all':
@@ -18,14 +20,18 @@ def run_blob(url, opt='doh'):
         print 'Laplacian of Gaussian computed'
         # Compute radii in the 3rd column.
         blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
+        return_dict['LoG'] = blobs_log
 
         blobs_dog = blob_dog(image_gray, max_sigma=30, threshold=.1)
         print 'Difference of Gaussian computed'
 
         blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
+        return_dict['DoG'] = blobs_dog
 
         blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
         print 'Determinant of Hessian computed'
+
+        return_dict['DoH'] = blobs_doh
 
         blobs_list = [blobs_log, blobs_dog, blobs_doh]
         colors = ['yellow', 'lime', 'red']
@@ -36,7 +42,7 @@ def run_blob(url, opt='doh'):
     elif opt=='doh':
         print 'DoH only'
         blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
-
+        return_dict['DoH'] = blobs_doh
         print blobs_doh
         sequence = zip([blobs_doh], ['red'], ['DoH'])
 
@@ -54,7 +60,7 @@ def run_blob(url, opt='doh'):
             y, x, r = blob
             c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
             ax.add_patch(c)
-
     plt.show()
+    return return_dict
 
-# run_blob(URL, 'doh')
+# create_blobs(URL)

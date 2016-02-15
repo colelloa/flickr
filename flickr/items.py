@@ -7,14 +7,24 @@
 
 from scrapy import Item, Field
 
-class FlickrMetaItem(Item):
+class FlickrItem(Item):
     url = Field()
     #types of metadata:
     #    http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
 
-class PictureItem(Item):
-    url = Field() #decent primary key for now
-    max_lower_pix = Field() #number of pixels above SOME threshold  in lower quadrant
-    length = Field() #might want to move len/hei to flickrmetaitem level, because it is faster(?) to get it from that
-    height = Field()
+class BlobItem(Item):
+    url = Field()
+    algorithm = Field() 
+    pic_height = Field()
+    pic_length = Field()
+    x_center = Field()
+    y_center = Field()
+    mean_px = Field()
+    median_px = Field()
+    mode_px = Field()
+    radius = Field()
+
+    mean_px_perim = Field() #mean px values around perimeter of blob
+
+
 

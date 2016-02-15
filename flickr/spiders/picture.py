@@ -11,8 +11,10 @@ import requests
 from StringIO import StringIO
 from PIL import Image
 
-from flickr.items import FlickrMetaItem, PictureItem
 import flickr.system_constants as s
+
+from flickr.items import FlickrItem, BlobItem
+from flickr.sandbox import create_blobs
 
 class PictureSpider(scrapy.Spider):
     name = "picture"
@@ -49,7 +51,7 @@ class PictureSpider(scrapy.Spider):
 
     #param: dict of one photo on a page
     def get_flickr_items(self, photo, to_return):
-        f_item = FlickrMetaItem()
+        f_item = FlickrItem()
 
         f_item['url'] = s.BASE_URL.format(photo['farm'], photo['server'], photo['id'], photo['secret'])
         #https://www.flickr.com/services/api/misc.urls.html
@@ -58,29 +60,38 @@ class PictureSpider(scrapy.Spider):
 
         to_return.append(f_item)
 
-        #DEV
-        # self.scan_picture(f_item['url'], to_return)
+        self.get_blobs(f_item, to_return)
 
         return to_return
 
-    #use pillow here to scan the picture by URL and populate the other item, and append to to_return
-    #ASK TOM ABOUT GARBAGE COLLECTION
-    #PIL.Image, StringIO, requests.get()
-    #could cause problems with VM if memory gets overloaded
-    def scan_picture(self, url, to_return):
-        p_item = PictureItem()
+    def get_blobs(self, f_item, to_return):
+        url = f_item['url']
+        all_blobs = create_blobs(url) # returns a dict; key=name of alg, value = corresponding list of blob candidates with [y,x,radius]
+        for alg_name in all_blobs: 
+            for blob in all_blobs[alg_name]:
+                to_return.append(self.scan_blob(url, alg_name, blob))
+
+        return to_return
+
+    #use pillow here to scan the picture by URL, populate blob item, and append to to_return
+
+    def scan_blob(self, url, alg, blob):
+        b_item = BlobItem()
+        b_item['url'] = url
+        b_item['algorithm'] = alg
+        b_item['y_center'] = blob[0]
+        b_item['x_center'] = blob[1]
+        b_item['radius'] = blob[2]
+        #     pic_height = Field()
+        #     pic_length = Field()
+        #     mean_px = Field()
+        #     median_px = Field()
+        #     mode_px = Field()
+        #     mean_px_perim = Field()
 
         #attempt to prevent memory leak: with statement
-        with Image.open(StringIO(requests.get(url).content)) as img:
-            length,height = img.size #see comments in items.PictureItem
-
-            p_item['max_lower_pix'] = s.UPPER_PIXEL_THRESHOLD #DEV_REMOVE
-
-            #(get other picture metadata here, ande put in p_item)
-
-            p_item['url'] = url
-            p_item['length'] = length
-            p_item['height'] = height
-
-        to_return.append(p_item)
+        # with Image.open(StringIO(requests.get(url).content)) as img:
+        #     print img
+            
+        return b_item
 
