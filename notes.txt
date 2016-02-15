@@ -17,3 +17,10 @@
 
 -save output from pipeline to ARFF file
     -ARFF FORMAT: http://www.cs.waikato.ac.nz/ml/weka/arff.html
+
+
+2/14
+-find more features to extract
+-still need to write pipeline
+-read PIL documentation to get various features already needed
+    -can be done with ImageJ if not possible with pillow

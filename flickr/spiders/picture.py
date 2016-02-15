@@ -73,7 +73,7 @@ class PictureSpider(scrapy.Spider):
 
         return to_return
 
-    #use pillow here to scan the picture by URL, populate blob item, and append to to_return
+    #use pillow here to scan the picture by URL, populate blob item, and append to_return
 
     def scan_blob(self, url, alg, blob):
         b_item = BlobItem()
@@ -82,6 +82,7 @@ class PictureSpider(scrapy.Spider):
         b_item['y_center'] = blob[0]
         b_item['x_center'] = blob[1]
         b_item['radius'] = blob[2]
+        
         #     pic_height = Field()
         #     pic_length = Field()
         #     mean_px = Field()
@@ -89,7 +90,6 @@ class PictureSpider(scrapy.Spider):
         #     mode_px = Field()
         #     mean_px_perim = Field()
 
-        #attempt to prevent memory leak: with statement
         # with Image.open(StringIO(requests.get(url).content)) as img:
         #     print img
             
