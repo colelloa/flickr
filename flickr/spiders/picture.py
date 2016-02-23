@@ -7,9 +7,11 @@
 import scrapy
 import flickrapi
 import requests
+import numpy
 
 from StringIO import StringIO
 from PIL import Image
+from scipy.stats import mode
 
 import flickr.system_constants as s
 
@@ -99,10 +101,24 @@ class PictureSpider(scrapy.Spider):
 
         with Image.open(StringIO(requests.get(url).content)) as img:
             orig_width, orig_height = img.size
-            b_item['radius_hpct'] =  rad / orig_height
-            b_item['radius_wpct'] = rad / orig_width
-            circ_img = img.crop(x-(rad/2), y-(rad/2), rad, rad) #select box starting at left corner from x,y center of len/width rad
-            
-            
+            b_item['radius_hpct'] =  rad / float(orig_height)
+            b_item['radius_wpct'] = rad / float(orig_width)
+            left_x = x-(rad/2)
+            left_y = y-(rad/2)
+            print left_x
+            print left_y
+            box = (left_x, left_y, rad, rad)
+            with img.crop(box) as circ_img: #select box starting at left corner from x,y center of len/width rad
+                print circ_img.__crop
+                print circ_img.im
+                print 1/0
+                pix_val = list(circ_img.getdata())
+                print pix_val
+                pix_val_flat = [x for sets in pix_val for x in sets]
+                print pix_val_flat
+                b_item['mean_px'] = numpy.mean(pix_val_flat)
+                b_item['median_px'] = numpy.median(pix_val_flat)
+                # b_item['mode_px'] = mode(pix_val_flat)[0][0]
+
         return b_item
 
