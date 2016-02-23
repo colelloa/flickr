@@ -41,7 +41,7 @@ class PictureSpider(scrapy.Spider):
                         yield i
 
                 lim += 1 #DEV
-                if lim >  5: #DEV
+                if lim >  1: #DEV
                     break #DEV
 
                 #finally, update current page by getting next page
@@ -73,8 +73,7 @@ class PictureSpider(scrapy.Spider):
 
         return to_return
 
-    #use pillow here to scan the picture by URL, populate blob item, and append to_return
-
+    #use pillow here to scan the blob by URL, populate blob item, and append to_return
     def scan_blob(self, url, alg, blob):
         b_item = BlobItem()
         b_item['url'] = url
@@ -82,13 +81,14 @@ class PictureSpider(scrapy.Spider):
         b_item['y_center'] = blob[0]
         b_item['x_center'] = blob[1]
         b_item['radius'] = blob[2]
-        
-    # mean_px = Field()
-    # median_px = Field()
-    # mode_px = Field()
-    # radius_hpct = Field() #ratio of radius to height of pic
-    # radius_lpct = Field() #ratio of radius to length of pic
-    # b_class=Field()
+
+        b_item['mean_px'] = 'mean'
+        b_item['median_px'] = 'median'
+        b_item['mode_px'] = 'mode'
+        b_item['radius_hpct'] = 'hrad'
+        b_item['radius_lpct'] = 'lrad'
+
+        b_item['class'] = '?'
 
         # with Image.open(StringIO(requests.get(url).content)) as img:
         #     print img

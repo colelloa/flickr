@@ -3,7 +3,6 @@ import flickr.system_constants as s
 
 class FlickrPipeline(object):
     def __init__(self):
-
             fh = 'pictures/file.arff'
             with open(fh, 'w' as f):
                 f.write(s.ARFF_HEADER)
@@ -23,7 +22,7 @@ class FlickrPipeline(object):
 
     def add_blob_item(self, item):
         print item  
-        with open(fh, 'w' as f):
+        with open(self.fh, 'w' as f):
                 f.write('{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}'.format(
                     item['url'], item['algorithm'], item['x_center'], item['y_center'], item['mean_px'], 
                     item['median_px'], item['mode_px'], item['radius'], item['radius_hpct'], item['radius_lpct'], item['b_class']))     
