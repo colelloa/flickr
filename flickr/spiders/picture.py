@@ -83,12 +83,12 @@ class PictureSpider(scrapy.Spider):
         b_item['x_center'] = blob[1]
         b_item['radius'] = blob[2]
         
-        #     pic_height = Field()
-        #     pic_length = Field()
-        #     mean_px = Field()
-        #     median_px = Field()
-        #     mode_px = Field()
-        #     mean_px_perim = Field()
+    # mean_px = Field()
+    # median_px = Field()
+    # mode_px = Field()
+    # radius_hpct = Field() #ratio of radius to height of pic
+    # radius_lpct = Field() #ratio of radius to length of pic
+    # b_class=Field()
 
         # with Image.open(StringIO(requests.get(url).content)) as img:
         #     print img

@@ -14,17 +14,16 @@ class FlickrItem(Item):
 
 class BlobItem(Item):
     url = Field()
-    algorithm = Field() 
-    pic_height = Field()
-    pic_length = Field()
+    algorithm = Field()  
     x_center = Field()
     y_center = Field()
     mean_px = Field()
     median_px = Field()
     mode_px = Field()
     radius = Field()
-
-    mean_px_perim = Field() #mean px values around perimeter of blob
+    radius_hpct = Field() #ratio of radius to height of pic
+    radius_lpct = Field() #ratio of radius to length of pic
+    b_class=Field() # ? when scraping data, class when using training set
 
 
 
