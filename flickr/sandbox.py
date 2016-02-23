@@ -46,21 +46,21 @@ def create_blobs(url, opt='all'):
         print blobs_doh
         sequence = zip([blobs_doh], ['red'], ['DoH'])
 
-    fig,axes = plt.subplots(1, 3, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
-    axes = axes.ravel()
+    # fig,axes = plt.subplots(1, 3, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
+    # axes = axes.ravel()
 
-    print 'Matplot initialized'
+    # print 'Matplot initialized'
 
-    for blobs, color, title in sequence:
-        ax = axes[0]
-        axes = axes[1:]
-        ax.set_title(title)
-        ax.imshow(image, interpolation='nearest')
-        for blob in blobs:
-            y, x, r = blob
-            c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
-            ax.add_patch(c)
-    plt.show()
+    # for blobs, color, title in sequence:
+    #     ax = axes[0]
+    #     axes = axes[1:]
+    #     ax.set_title(title)
+    #     ax.imshow(image, interpolation='nearest')
+    #     for blob in blobs:
+    #         y, x, r = blob
+    #         c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
+    #         ax.add_patch(c)
+    # plt.show()
     return return_dict
 
 # create_blobs(URL)

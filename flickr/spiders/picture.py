@@ -88,7 +88,7 @@ class PictureSpider(scrapy.Spider):
         b_item['radius_hpct'] = 'hrad'
         b_item['radius_lpct'] = 'lrad'
 
-        b_item['class'] = '?'
+        b_item['b_class'] = '?'
 
         # with Image.open(StringIO(requests.get(url).content)) as img:
         #     print img
