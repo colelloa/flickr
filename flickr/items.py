@@ -22,7 +22,7 @@ class BlobItem(Item):
     mode_px = Field()
     radius = Field()
     radius_hpct = Field() #ratio of radius to height of pic
-    radius_lpct = Field() #ratio of radius to length of pic
+    radius_wpct = Field() #ratio of radius to width of pic
     b_class=Field() # ? when scraping data, class when using training set
 
 

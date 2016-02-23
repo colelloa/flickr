@@ -66,7 +66,8 @@ class PictureSpider(scrapy.Spider):
 
     def get_blobs(self, f_item, to_return):
         url = f_item['url']
-        all_blobs = create_blobs(url) # returns a dict; key=name of alg, value = corresponding list of blob candidates with [y,x,radius]
+        all_blobs = create_blobs(url, 'doh') # returns a dict; key=name of alg, value = corresponding list of blob candidates with [y,x,radius]
+                    #DOH = DEV
         for alg_name in all_blobs: 
             for blob in all_blobs[alg_name]:
                 to_return.append(self.scan_blob(url, alg_name, blob))
@@ -76,22 +77,32 @@ class PictureSpider(scrapy.Spider):
     #use pillow here to scan the blob by URL, populate blob item, and append to_return
     def scan_blob(self, url, alg, blob):
         b_item = BlobItem()
+        x = blob[1]
+        y = blob[0]
+        rad = blob[2]
+
         b_item['url'] = url
         b_item['algorithm'] = alg
-        b_item['y_center'] = blob[0]
-        b_item['x_center'] = blob[1]
-        b_item['radius'] = blob[2]
+        b_item['y_center'] = y
+        b_item['x_center'] = x
+        b_item['radius'] = rad
 
-        b_item['mean_px'] = 'mean'
-        b_item['median_px'] = 'median'
-        b_item['mode_px'] = 'mode'
-        b_item['radius_hpct'] = 'hrad'
-        b_item['radius_lpct'] = 'lrad'
+        b_item['mean_px'] = '?'
+        b_item['median_px'] = '?'
+        b_item['mode_px'] = '?'
+        b_item['radius_hpct'] = '?'
+        b_item['radius_wpct'] = '?'
 
         b_item['b_class'] = '?'
 
-        # with Image.open(StringIO(requests.get(url).content)) as img:
-        #     print img
+        print 'OPENING BLOB'
+
+        with Image.open(StringIO(requests.get(url).content)) as img:
+            orig_width, orig_height = img.size
+            b_item['radius_hpct'] =  rad / orig_height
+            b_item['radius_wpct'] = rad / orig_width
+            circ_img = img.crop(x-(rad/2), y-(rad/2), rad, rad) #select box starting at left corner from x,y center of len/width rad
+            
             
         return b_item
 
