@@ -79,6 +79,7 @@ class PictureSpider(scrapy.Spider):
     #use pillow here to scan the blob by URL, populate blob item, and append to_return
     def scan_blob(self, url, alg, blob):
         b_item = BlobItem()
+        print blob
         x = blob[1]
         y = blob[0]
         rad = blob[2]
@@ -103,22 +104,34 @@ class PictureSpider(scrapy.Spider):
             orig_width, orig_height = img.size
             b_item['radius_hpct'] =  rad / float(orig_height)
             b_item['radius_wpct'] = rad / float(orig_width)
-            left_x = x-(rad/2)
-            left_y = y-(rad/2)
-            print left_x
-            print left_y
-            box = (left_x, left_y, rad, rad)
-            with img.crop(box) as circ_img: #select box starting at left corner from x,y center of len/width rad
-                print circ_img.__crop
-                print circ_img.im
-                print 1/0
+            left_x = x-rad
+            left_y = y-rad
+
+            leng = rad * 2
+
+            x_bound = (leng+left_x) if (leng+left_x < orig_width) else orig_width
+            y_bound = (leng+left_y) if (leng+left_y < orig_height) else orig_height 
+            
+
+            print 'radius:{}'.format(rad)
+            print '(x,y):{0},{1}'.format(x,y)
+            print 'length:{}'.format(orig_height)
+            print 'width:{}'.format(orig_width)
+            box = (left_x, left_y, x_bound, y_bound)
+            print 'box:{}'.format(box)
+
+            with img.crop(box) as circ_img:  #select box starting at left corner from x,y center of len/width rad
+                
+                circ_img.load()
+
+                
                 pix_val = list(circ_img.getdata())
-                print pix_val
+                
                 pix_val_flat = [x for sets in pix_val for x in sets]
-                print pix_val_flat
+                
                 b_item['mean_px'] = numpy.mean(pix_val_flat)
                 b_item['median_px'] = numpy.median(pix_val_flat)
-                # b_item['mode_px'] = mode(pix_val_flat)[0][0]
+                b_item['mode_px'] = mode(pix_val_flat)[0][0]
 
         return b_item
 

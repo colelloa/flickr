@@ -43,14 +43,13 @@ def create_blobs(url, opt='all'):
         print 'DoH only'
         blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
         return_dict['DoH'] = blobs_doh
-        print blobs_doh
         sequence = zip([blobs_doh], ['red'], ['DoH'])
-
+    print sequence
     # fig,axes = plt.subplots(1, 3, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
     # axes = axes.ravel()
 
     # print 'Matplot initialized'
-
+    # print sequence
     # for blobs, color, title in sequence:
     #     ax = axes[0]
     #     axes = axes[1:]
