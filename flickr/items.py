@@ -7,10 +7,10 @@
 
 from scrapy import Item, Field
 
-class FlickrItem(Item):
-    url = Field()
-    #types of metadata:
-    #    http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
+# class FlickrItem(Item):
+#     url = Field()
+#     #types of metadata:
+#     #    http://librdf.org/flickcurl/api/flickcurl-searching-search-extras.html
 
 class BlobItem(Item):
     url = Field()
