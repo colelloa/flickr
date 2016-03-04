@@ -1,0 +1,22 @@
+% 1. Title: Flickr Golf Ball Images
+% 
+% 2. Sources:
+%      (a) Creator: A. Colello
+%      (b) Donor: Flickr (flickr.com)
+%      (c) Date: February, 2016
+% 
+@RELATION golfballs
+
+@ATTRIBUTE url  STRING
+@ATTRIBUTE algorithm    STRING
+@ATTRIBUTE xcenter   NUMERIC
+@ATTRIBUTE ycenter   NUMERIC
+@ATTRIBUTE meanpx   NUMERIC
+@ATTRIBUTE medianpx   NUMERIC
+@ATTRIBUTE modepx   NUMERIC
+@ATTRIBUTE radius   NUMERIC
+@ATTRIBUTE radiusheightpct   NUMERIC
+@ATTRIBUTE radiuswidthpct  NUMERIC
+@ATTRIBUTE class        {POSITIVE,NEGATIVE}
+
+@DATA

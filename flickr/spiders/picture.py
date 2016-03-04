@@ -59,7 +59,7 @@ class PictureSpider(scrapy.Spider):
 
     def get_blobs(self, photo, to_return):
         url = s.BASE_URL.format(photo['farm'], photo['server'], photo['id'], photo['secret'])
-        all_blobs = create_blobs(url, 'doh') # returns a dict; key=name of alg, value = corresponding list of blob candidates with [y,x,radius]
+        all_blobs = create_blobs(url, 'all') # returns a dict; key=name of alg, value = corresponding list of blob candidates with [y,x,radius]
                     #DOH = DEV?
         for alg_name in all_blobs: 
             for blob in all_blobs[alg_name]:
